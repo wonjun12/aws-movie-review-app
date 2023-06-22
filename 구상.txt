@@ -1,0 +1,35 @@
+1. 서버리스에서 앱 먼저 만든다.
+2. VSC 실행하여, 개발 준비
+3. 배포 테스트해서 성공하는지 확인
+4. 화면 기획서를 바탕으로 테이블 설계
+    1) DB 유저 및 Db 생성
+    2) 테이블 생성
+5. API 설계 (포스트맨)
+
+-- 회원 가입
+    POST /user/registor
+    {
+        "email" : "againor0@instagram.com", 
+        "password" : "oXWdDAFWWqVm", 
+        "name" : "Aurthur Gainor", 
+        "gender" : "Male"
+    }
+-- 로그인
+    POST /user/login
+    {
+        "email": "againo540@instagram.com",
+        "password": "oXWdDAFWWqVm"
+    }
+-- 로그아웃
+    DELETE /user/logout
+    header = 인증 토큰
+
+{
+    "rating" : 5
+}
+
+
+6. API 개발할시, 공통 파일 먼저 가져온 후 시작한다.
+7. config을 프로젝트에 맞게 수정
+8. API 한가지 구현한 후, 로컬 테스트 한다.
+9. 테스트 후 커밋, 푸쉬 / 레파지토리 생성
