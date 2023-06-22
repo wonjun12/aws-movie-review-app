@@ -155,52 +155,6 @@
         }
       }
     },
-    "EnterpriseLogAccessIamRole": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": "arn:aws:iam::802587217904:root"
-              },
-              "Action": "sts:AssumeRole",
-              "Condition": {
-                "StringEquals": {
-                  "sts:ExternalId": "ServerlessEnterprise-d1bf8de0-3530-4771-8713-99bd4eb7e2e8"
-                }
-              }
-            }
-          ]
-        },
-        "Policies": [
-          {
-            "PolicyName": "LogFilterAccess",
-            "PolicyDocument": {
-              "Version": "2012-10-17",
-              "Statement": [
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "logs:FilterLogEvents"
-                  ],
-                  "Resource": [
-                    {
-                      "Fn::GetAtt": [
-                        "ApiLogGroup",
-                        "Arn"
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          }
-        ]
-      }
-    },
     "ApiLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -208,9 +162,9 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/aws-movie-review-app/dev/1687411640804-2023-06-22T05:27:20.804Z/aws-movie-review-app.zip"
+          "S3Key": "serverless/aws-movie-review-app/dev/1687416313028-2023-06-22T06:45:13.028Z/aws-movie-review-app.zip"
         },
-        "Handler": "s_api.handler",
+        "Handler": "wsgi_handler.handler",
         "Runtime": "python3.10",
         "FunctionName": "aws-movie-review-app-dev-api",
         "MemorySize": 1024,
@@ -226,14 +180,14 @@
         "ApiLogGroup"
       ]
     },
-    "ApiLambdaVersionE5PReDitGWJk01sysWUqPudrODlysuMtllZa5xS5Z8": {
+    "ApiLambdaVersionazqdJhx27zoKrLZSRoOSpOtlZ4rvMW2RMaUixpNP3U": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ApiLambdaFunction"
         },
-        "CodeSha256": "VqC/43cXPLLVPDbjZz3nTSkUdDS0chs4qeNMcSXMhas="
+        "CodeSha256": "zhVQVDetNsCUxHsVm2Dt0eCESnqcnKIXhrlLblOlcX8="
       }
     },
     "HttpApi": {
@@ -241,12 +195,6 @@
       "Properties": {
         "Name": "dev-aws-movie-review-app",
         "ProtocolType": "HTTP"
-      }
-    },
-    "HttpApiLogGroup": {
-      "Type": "AWS::Logs::LogGroup",
-      "Properties": {
-        "LogGroupName": "/aws/http-api/aws-movie-review-app-dev"
       }
     },
     "HttpApiStage": {
@@ -259,18 +207,8 @@
         "AutoDeploy": true,
         "DefaultRouteSettings": {
           "DetailedMetricsEnabled": false
-        },
-        "AccessLogSettings": {
-          "DestinationArn": {
-            "Fn::GetAtt": [
-              "HttpApiLogGroup",
-              "Arn"
-            ]
-          },
-          "Format": "{\"requestTime\":\"$context.requestTime\",\"requestId\":\"$context.requestId\",\"apiId\":\"$context.apiId\",\"resourcePath\":\"$context.routeKey\",\"path\":\"$context.path\",\"httpMethod\":\"$context.httpMethod\",\"stage\":\"$context.stage\",\"status\":\"$context.status\",\"integrationStatus\":\"$context.integrationStatus\",\"integrationLatency\":\"$context.integrationLatency\",\"responseLatency\":\"$context.responseLatency\",\"responseLength\":\"$context.responseLength\",\"errorMessage\":\"$context.error.message\",\"format\":\"SLS_HTTP_API_LOG\",\"version\":\"1.0.0\"}"
         }
-      },
-      "DependsOn": "HttpApiLogGroup"
+      }
     },
     "ApiLambdaPermissionHttpApi": {
       "Type": "AWS::Lambda::Permission",
@@ -346,26 +284,6 @@
         }
       },
       "DependsOn": "HttpApiIntegrationApi"
-    },
-    "CWLSubFilterApiLogGroupUsEast1": {
-      "Type": "AWS::Logs::SubscriptionFilter",
-      "Properties": {
-        "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:d1bf8de0-3530-4771-8713-99bd4eb7e2e8#2jkPr21hY0FxKd3fg5#aws-movie-review-app#dev",
-        "FilterPattern": "?\"REPORT RequestId: \" ?\"SERVERLESS_ENTERPRISE\"",
-        "LogGroupName": {
-          "Ref": "ApiLogGroup"
-        }
-      }
-    },
-    "CWLSubFilterHttpApiLogGroupUsEast1": {
-      "Type": "AWS::Logs::SubscriptionFilter",
-      "Properties": {
-        "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:d1bf8de0-3530-4771-8713-99bd4eb7e2e8#2jkPr21hY0FxKd3fg5#aws-movie-review-app#dev",
-        "FilterPattern": "\"SLS_HTTP_API_LOG\"",
-        "LogGroupName": {
-          "Ref": "HttpApiLogGroup"
-        }
-      }
     }
   },
   "Outputs": {
@@ -377,21 +295,10 @@
         "Name": "sls-aws-movie-review-app-dev-ServerlessDeploymentBucketName"
       }
     },
-    "EnterpriseLogAccessIamRole": {
-      "Value": {
-        "Fn::GetAtt": [
-          "EnterpriseLogAccessIamRole",
-          "Arn"
-        ]
-      },
-      "Export": {
-        "Name": "sls-aws-movie-review-app-dev-EnterpriseLogAccessIamRole"
-      }
-    },
     "ApiLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ApiLambdaVersionE5PReDitGWJk01sysWUqPudrODlysuMtllZa5xS5Z8"
+        "Ref": "ApiLambdaVersionazqdJhx27zoKrLZSRoOSpOtlZ4rvMW2RMaUixpNP3U"
       },
       "Export": {
         "Name": "sls-aws-movie-review-app-dev-ApiLambdaFunctionQualifiedArn"

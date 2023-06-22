@@ -1,5 +1,3 @@
-org: wonjun159
-app: aws-movie-review-app
 service: aws-movie-review-app
 
 frameworkVersion: '3'
@@ -11,6 +9,7 @@ custom:
 provider:
   name: aws
   runtime: python3.10
+  region: ap-northeast-2
 
 functions:
   api:
