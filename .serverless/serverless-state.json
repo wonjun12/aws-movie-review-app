@@ -8,6 +8,13 @@
       "name": "aws",
       "runtime": "python3.10",
       "region": "ap-northeast-2",
+      "ecr": {
+        "images": {
+          "appimage": {
+            "path": "./"
+          }
+        }
+      },
       "stage": "dev",
       "versionFunctions": true,
       "compiledCloudFormationTemplate": {
@@ -171,13 +178,9 @@
             "Type": "AWS::Lambda::Function",
             "Properties": {
               "Code": {
-                "S3Bucket": {
-                  "Ref": "ServerlessDeploymentBucket"
-                },
-                "S3Key": "serverless/aws-movie-review-app/dev/1687416313028-2023-06-22T06:45:13.028Z/aws-movie-review-app.zip"
+                "ImageUri": "129108224842.dkr.ecr.ap-northeast-2.amazonaws.com/serverless-aws-movie-review-app-dev@sha256:dce987ea845db2d3ec4909df39652d5a8b2b01b6429ee790bb19f725d1edeaae"
               },
-              "Handler": "wsgi_handler.handler",
-              "Runtime": "python3.10",
+              "PackageType": "Image",
               "FunctionName": "aws-movie-review-app-dev-api",
               "MemorySize": 1024,
               "Timeout": 6,
@@ -192,14 +195,14 @@
               "ApiLogGroup"
             ]
           },
-          "ApiLambdaVersionazqdJhx27zoKrLZSRoOSpOtlZ4rvMW2RMaUixpNP3U": {
+          "ApiLambdaVersionKFnvL6v42HcF1159FA7qPkbsIB4FVdoR7laTu4Vvk60": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ApiLambdaFunction"
               },
-              "CodeSha256": "zhVQVDetNsCUxHsVm2Dt0eCESnqcnKIXhrlLblOlcX8="
+              "CodeSha256": "dce987ea845db2d3ec4909df39652d5a8b2b01b6429ee790bb19f725d1edeaae"
             }
           },
           "HttpApi": {
@@ -307,7 +310,7 @@
           "ApiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ApiLambdaVersionazqdJhx27zoKrLZSRoOSpOtlZ4rvMW2RMaUixpNP3U"
+              "Ref": "ApiLambdaVersionKFnvL6v42HcF1159FA7qPkbsIB4FVdoR7laTu4Vvk60"
             },
             "Export": {
               "Name": "sls-aws-movie-review-app-dev-ApiLambdaFunctionQualifiedArn"
@@ -438,14 +441,12 @@
         "app": "app.app"
       }
     },
-    "plugins": [
-      "serverless-wsgi",
-      "serverless-python-requirements"
-    ],
     "pluginsData": {},
     "functions": {
       "api": {
-        "handler": "wsgi_handler.handler",
+        "image": {
+          "name": "appimage"
+        },
         "events": [
           {
             "httpApi": "*",
@@ -456,9 +457,8 @@
         "package": {},
         "memory": 1024,
         "timeout": 6,
-        "runtime": "python3.10",
         "vpc": {},
-        "versionLogicalId": "ApiLambdaVersionazqdJhx27zoKrLZSRoOSpOtlZ4rvMW2RMaUixpNP3U"
+        "versionLogicalId": "ApiLambdaVersionKFnvL6v42HcF1159FA7qPkbsIB4FVdoR7laTu4Vvk60"
       }
     },
     "configValidationMode": "warn",
@@ -474,17 +474,13 @@
       },
       "functions": {
         "$ref": "$[\"service\"][\"functions\"]"
-      },
-      "plugins": {
-        "$ref": "$[\"service\"][\"plugins\"]"
       }
     },
     "layers": {},
-    "isDashboardMonitoringPreconfigured": false,
-    "artifact": "C:\\Users\\405\\aws-movie-review-app\\.serverless\\aws-movie-review-app.zip"
+    "isDashboardMonitoringPreconfigured": false
   },
   "package": {
-    "artifactDirectoryName": "serverless/aws-movie-review-app/dev/1687416313028-2023-06-22T06:45:13.028Z",
-    "artifact": "aws-movie-review-app.zip"
+    "artifactDirectoryName": "serverless/aws-movie-review-app/dev/1687509828928-2023-06-23T08:43:48.928Z",
+    "artifact": ""
   }
 }

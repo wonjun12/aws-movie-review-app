@@ -1,9 +1,11 @@
+import serverless_wsgi
 from flask import Flask
 from flask_restful import Api
 
 from resources.user import UserRegistorResource, UserLoginResource, UserLogoutResource, UserAboutResource, jwt_blocklist
 from resources.movie import MovieAllViewResource, MovieViewResource, MovieSearchResource
 from resources.review import ReviewResource
+from resources.recommend import MovieRecommendResource
 
 
 app = Flask(__name__)
@@ -33,6 +35,11 @@ api.add_resource( MovieViewResource, '/movie/<int:movie_id>')
 api.add_resource( MovieSearchResource, '/movie/search')
 # 영화 리뷰 작성, 조회
 api.add_resource( ReviewResource , '/movie/<int:movie_id>/review')
+# 영화 추천 API
+api.add_resource( MovieRecommendResource , '/movie/recommend')
+
+def handler(event, context):
+    return serverless_wsgi.handle_request(app, event, context)
 
 if __name__ == '__main__':
     app.run()

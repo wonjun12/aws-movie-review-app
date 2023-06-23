@@ -1,0 +1,64 @@
+추천 시스템 만들기 (영화 추천)
+ - 영화의 종류와 유저들의 추천 정보들이 필요하다.
+ - Colab에서 작업
+ - 영화와 추천 정보들을 상관관계로 만든다. (서로의 관계성을 확인한다)
+    - 해당 관계성 데이터를 csv 파일로 만들어 추천 시스템에 필요한 곳에 넣는다.
+ - 특정 유저의 추천 리스트를 가져와 해당 영화와 관계가 있는 모든것 불러온다.
+ - 관계가 있는 영화들의 관계들에 해당 유저의 추천 점수를 곱해 가중치를 더해 확실한 값을 가져온다.
+ - 해당 유저의 추천 리스트에 있는 데이터를 삭제하며, 중복된 데이터를 group by로 삭제하며 중복된 데이터는 큰 값을 가져온다.
+ - 만든 추천시스템의 title에 고유 id값을 넣기위해 db에서 필요한 데이터를 불러와 합친다.
+
+
+
+ - 추천시스템을 만들기 위해 pandas가 필요하다.
+
+== 추천에는 2가지 방법있다.
+ => 긴 간격으로 따로 상관관계 저장
+    - rating / movie 상관관계에 대하여 csv 파일 만들고 저장한다.
+    - 사용할 프로젝트에 폴더를 만들어 넣기
+
+== 배포 후 에러 발생시
+  - cloudWatch에서 확인 가능하다.
+  - Lambda로 들어가서 cloudWatch log보기로 가도 된다.
+
+== aws lambda의 한계
+  - 한번에 업로드 가능한 파일에 한계가 있다.
+  - pandas, numpy 라이브러리 자체의 용량이 매우 무거운 파일이기에 돌아가지 않는다.
+  => docker를 사용하자.
+     - 개발한 환경을 linux의 환경에 맞게 만들어서 만들어주는 프로그램
+     - https://www.docker.com/
+
+  = aws
+    - IAM 권한 추가(EC2ContainerRegistryFullAccess)
+    - Elastic Container Registry 접속
+    - 
+
+  = 프로젝트에 Dockerfile추가
+      FROM public.ecr.aws/lambda/python:3.10
+      COPY . ${LAMBDA_TASK_ROOT}
+      COPY requirements.txt .
+
+      RUN yum -y install gcc
+      RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
+
+      CMD ["app.handler"]
+  = .dockerignore 추가
+  = serverless.yml 파일 수정
+      provider:
+      name: aws
+      runtime: python3.10
+      region: ap-northeast-2
+      ecr:
+         images:
+            appimage:
+            path: ./
+
+      functions:
+         api:
+            image:
+               name: appimage
+            timeout: 30
+            events:
+               - httpApi: '*'
+   = requirements.txt 내용 추가
+      serverless-wsgi

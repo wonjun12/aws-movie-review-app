@@ -10,13 +10,14 @@ provider:
   name: aws
   runtime: python3.10
   region: ap-northeast-2
+  ecr:
+    images:
+      appimage:
+        path: ./
 
 functions:
   api:
-    handler: wsgi_handler.handler
+    image:
+      name: appimage
     events:
       - httpApi: '*'
-
-plugins:
-  - serverless-wsgi
-  - serverless-python-requirements

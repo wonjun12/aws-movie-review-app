@@ -4,7 +4,7 @@ from flask import request
 from mysql_connection import movie_mysql_connection
 from mysql.connector import Error
 
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 def decimal_format(data):
     for i in range(len(data)):
@@ -92,26 +92,33 @@ class MovieViewResource(Resource):
         }
 
 class MovieAllViewResource(Resource):
+
+    @jwt_required(optional=True)# jwt가 없어도 접속 가능하게 할수 있다.
     def get(self):
-        # {
+        # { Params
         #   offset : 5
+        #   limit : 20
         #   order : 'counting' , 'rating' 
         # }
         param = request.args
         offset = param.get('offset')
+        limit = param.get('limit')
         order = param.get('order')
+
+        user_id = get_jwt_identity()
+            # 없으면 None으로 뜸
 
         try:
             connection = movie_mysql_connection()
 
             query = f'''
-                select m.id, m.title, count(r.id) as counting, round(avg(r.rating), 1) as rating
+                select m.id, m.title, count(r.id) as counting, ifnull(avg(r.rating), 0) as rating
                 from movie m
                     left join rating r
                     on m.id = r.movieId
-                group by m.id
+                group by m.id 
                 order by {order} desc
-                limit {offset * 25}, 25;
+                limit {offset}, {limit};
             '''
 
             cursor = connection.cursor(dictionary=True)

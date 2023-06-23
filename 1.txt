@@ -1,0 +1,13 @@
+AWS provider credentials not found
+ - 서울 버전으로 lambda를 설정하려하는데 오류가 난다.
+ - 권한이 없다고 오류가 나는데, vscode에서 설정이 가능하다.
+
+https://www.serverless.com/framework/docs/providers/aws/guide/credentials
+serverless config credentials \
+  --provider aws \
+  --key AKIAIOSFODNN7EXAMPLE \
+  --secret wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
+
+= 도커란?
+  - 라이브러리도 배포해야하는데 크기가 너무 클경우
